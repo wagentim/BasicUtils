@@ -6,4 +6,9 @@ public class BasicUtils
 	{
 		return ( null == input ) || input.isEmpty();
 	}
+
+	public static final boolean isNull( final Object object )
+	{
+		return null == object;
+	}
 }
