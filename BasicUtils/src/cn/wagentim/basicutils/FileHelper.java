@@ -8,7 +8,7 @@ import java.nio.file.StandardOpenOption;
 
 public class FileHelper
 {
-	public static final boolean ísFileReady(final String filePath)
+	public static final boolean isFileReady(final String filePath)
 	{
 		final Path path = Paths.get(filePath);
 
@@ -30,7 +30,7 @@ public class FileHelper
 
 	public static final boolean writeToFile(final String content, final String filePath)
 	{
-		if( !ísFileReady(filePath) || BasicUtils.isNullOrEmpty(content) )
+		if( !isFileReady(filePath) || BasicUtils.isNullOrEmpty(content) )
 		{
 			return false;
 		}
