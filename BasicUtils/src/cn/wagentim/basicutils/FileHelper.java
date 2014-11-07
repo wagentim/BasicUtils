@@ -1,10 +1,10 @@
 package cn.wagentim.basicutils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 public class FileHelper
 {
@@ -28,14 +28,24 @@ public class FileHelper
 		return true;
 	}
 
-	public static final boolean writeToFile(InputStream is, final String filePath)
+	public static final boolean writeToFile(final String content, final String filePath)
 	{
-		if( !ísFileReady(filePath) )
+		if( !ísFileReady(filePath) || BasicUtils.isNullOrEmpty(content) )
 		{
 			return false;
 		}
 
-		
+		final Path path = Paths.get(filePath);
+
+		try
+		{
+			Files.write(path, content.getBytes(), StandardOpenOption.WRITE);
+		}
+		catch (IOException e)
+		{
+			return false;
+		}
+
 
 		return true;
 	}
