@@ -1,5 +1,6 @@
 package cn.wagentim.basicutils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -48,5 +49,91 @@ public class FileHelper
 
 
 		return true;
+	}
+	
+	public static final boolean compareFiles(String directory1, String directory2, StringBuffer report)
+	{
+		if( Validator.isNullOrEmpty(directory2) || Validator.isNullOrEmpty(directory1) )
+		{
+			report.append(getReportDirectoryIsEmpty());
+			return false;
+		}
+		
+		Path p1 = Paths.get(directory1);
+		Path p2 = Paths.get(directory2);
+		
+		if( !Files.exists(p1) || !Files.exists(p2) )
+		{
+			report.append(getReportDirectoryIsEmpty());
+			return false;
+		}
+		
+		if( !Files.isDirectory(p1) || !Files.isDirectory(p2) )
+		{
+			report.append(getReportIsNotDirectory());
+			return false;
+		}
+		
+		File f1 = new File(directory1);
+		File f2 = new File(directory2);
+		
+		compareDirectory(f1, f2, report);
+		compareDirectory(f2, f1, report);
+		
+		return report.length() > 0 ? false : true;
+	}
+
+	private static void compareDirectory(File directory1, File direcotry2, StringBuffer report)
+	{
+		File[] files1 = directory1.listFiles();
+		File[] files2 = direcotry2.listFiles();
+		
+		for(File f : files1)
+		{
+			File tmp = searchFile(f, files2);
+			
+			if( null == tmp )
+			{
+				report.append("[ " + f.getName() + " ]" + " is not exist in [ " + direcotry2 + " ]\n");
+			}
+			else if( f.isDirectory() && tmp.isDirectory() )
+			{
+				compareDirectory(f, tmp, report);
+			}
+		}
+		
+	}
+	
+	private static final File searchFile(File f, File[] files)
+	{
+		for(File tmp : files)
+		{
+			if( tmp.getName().equals(f.getName()) )
+			{
+				return tmp;
+			}
+		}
+		
+		return null;
+	}
+	
+	private static String getReportDirectoryIsEmpty()
+	{
+		return "The Directory does not exist!\n";
+	}
+	
+	private static String getReportIsNotDirectory()
+	{
+		return "One of the given path is not a directory\n";
+	}
+	
+	public static void main(String[] args)
+	{
+		String p1 = "C://temp";
+		String p2 = "C://temp2";
+		StringBuffer sb = new StringBuffer();
+		
+		FileHelper.compareFiles(p1, p2, sb);
+		System.out.println(sb.toString());
 	}
 }
