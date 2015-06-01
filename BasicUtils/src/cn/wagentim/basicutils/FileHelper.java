@@ -46,11 +46,17 @@ public class FileHelper
 		{
 			return false;
 		}
-
-
 		return true;
 	}
 	
+	/**
+	 * Check the consistency of the data under two different folders 
+	 * 
+	 * @param directory1
+	 * @param directory2
+	 * @param report
+	 * @return
+	 */
 	public static final boolean compareFiles(String directory1, String directory2, StringBuffer report)
 	{
 		if( Validator.isNullOrEmpty(directory2) || Validator.isNullOrEmpty(directory1) )
@@ -101,7 +107,6 @@ public class FileHelper
 				compareDirectory(f, tmp, report);
 			}
 		}
-		
 	}
 	
 	private static final File searchFile(File f, File[] files)
