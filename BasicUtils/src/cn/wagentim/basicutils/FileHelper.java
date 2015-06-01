@@ -31,7 +31,7 @@ public class FileHelper
 
 	public static final boolean writeToFile(final String content, final String filePath)
 	{
-		if( !isFileReady(filePath) || BasicUtils.isNullOrEmpty(content) )
+		if( !isFileReady(filePath) || Validator.isNullOrEmpty(content) )
 		{
 			return false;
 		}
@@ -134,11 +134,19 @@ public class FileHelper
 	
 	public static void main(String[] args)
 	{
-		String p1 = "C://temp";
-		String p2 = "C://temp2";
+		String p1 = "G://Pictures";
+		String p2 = "J://Pictures";
 		StringBuffer sb = new StringBuffer();
 		
 		FileHelper.compareFiles(p1, p2, sb);
-		System.out.println(sb.toString());
+		
+		if( sb.length() <= 0 )
+		{
+			System.out.println("The Files in the given Folders are same!");
+		}
+		else
+		{
+			System.out.println(sb.toString());
+		}
 	}
 }
