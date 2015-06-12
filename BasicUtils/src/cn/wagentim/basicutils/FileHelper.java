@@ -7,8 +7,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class FileHelper
 {
+	
+	private static final Logger logger = LogManager.getLogger(FileHelper.class);
+	
 	public static final boolean isFileReady(final String filePath)
 	{
 		final Path path = Paths.get(filePath);
@@ -147,6 +153,101 @@ public class FileHelper
 		else
 		{
 			System.out.println(sb.toString());
+		}
+	}
+	
+	/**
+	 * Check require the file. If file do not exist then we need to create a new one
+	 * 
+	 * @param filePath
+	 * @return
+	 */
+	public static boolean getOrCreateFile(final String filePath)
+	{
+		if( Validator.isNullOrEmpty(filePath) )
+		{
+			logger.error("FileHelper#getOrCreateFile the given String parameter is Null or Empty");
+			return false;
+		}
+		
+		if( !checkDirectoryRecusively(filePath) )
+		{
+			logger.error("FileHelper#getOrCreateFile Cannot create the missing directoies");
+			return false;
+		}
+		
+		Path path = Paths.get(filePath);
+		
+		if( Files.exists(path) )
+		{
+			return true;
+		}
+		
+		try
+		{
+			Files.createFile(path);
+			return true;
+		} catch (IOException e)
+		{
+		}
+		
+		return false;
+	}
+
+	/**
+	 * Check the directory. If some of it are missing, then it will create them automatically and recusively
+	 * 
+	 * @param filePath
+	 * @return
+	 */
+	public static boolean checkDirectoryRecusively(String filePath)
+	{
+		if( Validator.isNullOrEmpty(filePath) )
+		{
+			logger.error("FileHelper#checkDirectory the given String parameter is Null or Empty");
+			return false;
+		}
+		
+		Path path = Paths.get(filePath);
+		
+		if( Files.exists(path) )
+		{
+			return true;
+		}
+		
+		checkDirectoryPath(path.getParent());
+		
+		if( !Files.exists(path) )
+		{
+			try
+			{
+				Files.createFile(path);
+				return true;
+			} 
+			catch (IOException e)
+			{
+			}
+		}
+		
+		return false;
+	}
+	
+	private static void checkDirectoryPath(Path path)
+	{
+		if( !Files.exists(path) )
+		{
+			checkDirectoryPath(path.getParent());
+			try
+			{
+				Files.createDirectories(path);
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			return;
 		}
 	}
 }
