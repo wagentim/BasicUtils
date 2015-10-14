@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
-import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 /**
@@ -18,10 +18,20 @@ import org.apache.logging.log4j.Logger;
  */
 public final class FileHelper
 {
-	private static final Logger logger = LogManager.getLogger(FileHelper.class);
+	private final Logger logger;
 	
-	public static final boolean checkFile(final String filePath)
+	public FileHelper(final Logger logger)
 	{
+		this.logger = logger;
+	}
+	
+	public final boolean checkFile(final String filePath, final boolean createMissingDirectory)
+	{
+		if( !checkDirectoryRecusively(filePath, createMissingDirectory) )
+		{
+			return false;
+		}
+		
 		final Path path = Paths.get(filePath);
 
 		if(	!Files.exists(path) )
@@ -29,7 +39,6 @@ public final class FileHelper
 			try
 			{
 				Files.createFile(path);
-				// TODO check if the directory is not there, the create file method can also create the directory?
 			}
 			catch (IOException e)
 			{
@@ -40,9 +49,9 @@ public final class FileHelper
 		return true;
 	}
 
-	public static final boolean writeToFile(final String content, final String filePath)
+	public final boolean writeToFile(final String content, final String filePath)
 	{
-		if( !checkFile(filePath) || Validator.isNullOrEmpty(content) )
+		if( !checkFile(filePath, true) || Validator.isNullOrEmpty(content) )
 		{
 			return false;
 		}
@@ -57,6 +66,7 @@ public final class FileHelper
 		{
 			return false;
 		}
+		
 		return true;
 	}
 	
@@ -68,7 +78,7 @@ public final class FileHelper
 	 * @param report
 	 * @return
 	 */
-	public static final boolean compareFiles(String directory1, String directory2, StringBuffer report)
+	public final boolean compareFiles(String directory1, String directory2, StringBuffer report)
 	{
 		if( Validator.isNullOrEmpty(directory2) || Validator.isNullOrEmpty(directory1) )
 		{
@@ -100,7 +110,7 @@ public final class FileHelper
 		return report.length() > 0 ? false : true;
 	}
 
-	private static void compareDirectory(File directory1, File direcotry2, StringBuffer report)
+	private void compareDirectory(File directory1, File direcotry2, StringBuffer report)
 	{
 		File[] files1 = directory1.listFiles();
 		File[] files2 = direcotry2.listFiles();
@@ -120,7 +130,7 @@ public final class FileHelper
 		}
 	}
 	
-	private static final File searchFile(File f, File[] files)
+	private final File searchFile(File f, File[] files)
 	{
 		for(File tmp : files)
 		{
@@ -133,32 +143,14 @@ public final class FileHelper
 		return null;
 	}
 	
-	private static String getReportDirectoryIsEmpty()
+	private String getReportDirectoryIsEmpty()
 	{
 		return "The Directory does not exist!\n";
 	}
 	
-	private static String getReportIsNotDirectory()
+	private String getReportIsNotDirectory()
 	{
 		return "One of the given path is not a directory\n";
-	}
-	
-	public static void main(String[] args)
-	{
-		String p1 = "G://Pictures";
-		String p2 = "J://Pictures";
-		StringBuffer sb = new StringBuffer();
-		
-		FileHelper.compareFiles(p1, p2, sb);
-		
-		if( sb.length() <= 0 )
-		{
-			System.out.println("The Files in the given Folders are same!");
-		}
-		else
-		{
-			System.out.println(sb.toString());
-		}
 	}
 	
 	/**
@@ -167,7 +159,7 @@ public final class FileHelper
 	 * @param filePath
 	 * @return
 	 */
-	public static boolean getOrCreateFile(final String filePath)
+	public boolean getOrCreateFile(final String filePath)
 	{
 		if( Validator.isNullOrEmpty(filePath) )
 		{
@@ -175,7 +167,7 @@ public final class FileHelper
 			return false;
 		}
 		
-		if( !checkDirectoryRecusively(filePath) )
+		if( !checkDirectoryRecusively(filePath, true) )
 		{
 			logger.error("FileHelper#getOrCreateFile Cannot create the missing directoies");
 			return false;
@@ -200,54 +192,61 @@ public final class FileHelper
 	}
 
 	/**
-	 * Check the directory. If some of it are missing, then it will create them automatically and recusively
+	 * Check the directory. If some of it are missing, then it will create them automatically and recursively
 	 * 
 	 * @param filePath
 	 * @return
 	 */
-	public static boolean checkDirectoryRecusively(String filePath)
+	public boolean checkDirectoryRecusively(final String filePath, final boolean createMissing)
 	{
 		if( Validator.isNullOrEmpty(filePath) )
 		{
-			logger.error("FileHelper#checkDirectory the given String parameter is Null or Empty");
 			return false;
 		}
 		
 		Path path = Paths.get(filePath);
 		
-		if( Files.exists(path) )
+		for( int i = 0; i < 2; i++)
 		{
-			return true;
+    		if( !Files.isDirectory(path) )
+    		{
+    		    if( i == 1 )
+    		    {
+    		        return false;
+    		    }
+    		    
+    		    path = path.getParent();
+    		}
+    		else
+    		{
+    		    break;
+    		}
 		}
 		
-		checkDirectoryPath(path.getParent());
-		
-		if( !Files.exists(path) )
+		if( createMissing )
 		{
-			try
-			{
-				Files.createFile(path);
-				return true;
-			} 
-			catch (IOException e)
-			{
-			}
+		    checkDirectoryPathWithCreation(path);
+		}
+		else
+		{
+		    return Files.exists(path);
 		}
 		
 		return false;
 	}
 	
-	private static void checkDirectoryPath(Path path)
+	private void checkDirectoryPathWithCreation(final Path path)
 	{
 		if( !Files.exists(path) )
 		{
-			checkDirectoryPath(path.getParent());
+		    checkDirectoryPathWithCreation(path.getParent());
+		    
 			try
 			{
 				Files.createDirectories(path);
-			} catch (IOException e)
+			} 
+			catch (IOException e)
 			{
-				e.printStackTrace();
 			}
 		}
 		else
