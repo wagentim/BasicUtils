@@ -1,8 +1,5 @@
 package cn.wagentim.basicutils;
 
-
-
-
 public final class Validator
 {
 	public static boolean isNullOrEmpty(final CharSequence s)

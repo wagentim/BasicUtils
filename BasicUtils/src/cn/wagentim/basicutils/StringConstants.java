@@ -7,4 +7,5 @@ public interface StringConstants
 	public static final String SPACE = " ";
 	public static final String DOT = ".";
 	public static final char CHAR_SLASH = '/';
+	public static final String COMMA = ",";
 }

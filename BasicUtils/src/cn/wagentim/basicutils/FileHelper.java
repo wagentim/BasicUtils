@@ -10,12 +10,17 @@ import java.nio.file.StandardOpenOption;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class FileHelper
+/**
+ * Utility class for handling all file related In/Out 
+ * 
+ * @author bihu8398
+ *
+ */
+public final class FileHelper
 {
-	
 	private static final Logger logger = LogManager.getLogger(FileHelper.class);
 	
-	public static final boolean isFileReady(final String filePath)
+	public static final boolean checkFile(final String filePath)
 	{
 		final Path path = Paths.get(filePath);
 
@@ -37,7 +42,7 @@ public class FileHelper
 
 	public static final boolean writeToFile(final String content, final String filePath)
 	{
-		if( !isFileReady(filePath) || Validator.isNullOrEmpty(content) )
+		if( !checkFile(filePath) || Validator.isNullOrEmpty(content) )
 		{
 			return false;
 		}
