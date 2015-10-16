@@ -5,19 +5,19 @@ import java.util.Iterator;
 import java.util.List;
 
 
-public class Binder<T, E> implements IBinder<T, E>
+public class Binder implements IBinder
 {
-	private final List<IBinding<T, E>> bindings;
+	private final List<IBinding> bindings;
 	
 	public Binder()
 	{
-		this.bindings = new ArrayList<IBinding<T, E>>();
+		this.bindings = new ArrayList<IBinding>();
 	}
 
 	@Override
-	public IBinding<T, E> bind(T t)
+	public <T, E> IBinding bind(T t)
 	{
-		final Binding<T, E> binding = new Binding<T, E>(t);
+		final Binding binding = new Binding(t);
 		
 		if( !isAlreadyExisted(binding) )
 		{
@@ -28,13 +28,13 @@ public class Binder<T, E> implements IBinder<T, E>
 		return null;
 	}
 
-	private boolean isAlreadyExisted(Binding<T, E> binding)
+	private <T, E> boolean isAlreadyExisted(Binding binding)
 	{
-		Iterator<IBinding<T, E>> it = bindings.iterator();
+		Iterator<IBinding> it = bindings.iterator();
 		
 		while(it.hasNext())
 		{
-			IBinding<T, E> bind = it.next();
+			IBinding bind = it.next();
 			
 			if( null == bind )
 			{
@@ -51,7 +51,7 @@ public class Binder<T, E> implements IBinder<T, E>
 	}
 
 	@Override
-	public List<IBinding<T, E>> getBindings()
+	public <T, E> List<IBinding> getBindings()
 	{
 		return bindings;
 	}

@@ -2,8 +2,8 @@ package cn.wagentim.injector;
 
 import java.util.List;
 
-public interface IBinder<T, E>
+public interface IBinder
 {
-	IBinding<T, E> bind(T t);
-	List<IBinding<T, E>> getBindings();
+	<T, E> IBinding bind(T t);
+	<T, E> List<IBinding> getBindings();
 }

@@ -1,10 +1,10 @@
 package cn.wagentim.injector;
 
-public interface IBinding<T, E>
+public interface IBinding
 {
-	IBinding<T, E> to(E t);
-	T getSource();
-	E getTarget();
+	<T, E> IBinding to(E t);
+	<T, E> T getSource();
+	<T, E> E getTarget();
 	void asSingleton();
 	boolean isSingleton();
 }

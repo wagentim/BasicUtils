@@ -1,45 +1,50 @@
 package cn.wagentim.injector;
 
-public class Binding<T, E> implements IBinding<T, E>
+public class Binding implements IBinding
 {
-	private T source;
-	private E target;
-	private boolean singleton = false;
 	
-	public Binding(T t)
-	{
-		this.source = t;
-	}
+	private Object source;
+	private Object target;
+	private boolean singleton = false;
 
-	@Override
-	public IBinding<T, E> to(E e)
+	public <T> Binding(T t)
 	{
-		this.target = e;
+		source = t;
+	}
+	
+	@Override
+	public <T, E> IBinding to(E t)
+	{
+		target = t;
 		return this;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public T getSource()
+	public <T, E> T getSource()
 	{
-		return source;
+		return (T) source;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public E getTarget()
+	public <T, E> E getTarget()
 	{
-		return target;
+		return (E) target;
 	}
 
 	@Override
 	public void asSingleton()
 	{
-		singleton = true;
+		this.singleton = true;
 	}
 
 	@Override
 	public boolean isSingleton()
 	{
-		return singleton;
+		return this.singleton;
 	}
+	
+	
 	
 }
