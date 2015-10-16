@@ -49,6 +49,16 @@ public final class FileHelper
 		return true;
 	}
 
+	public final String writeToTempFile(final String content)
+	{
+		if( Validator.isNullOrEmpty(content) )
+		{
+			logger.log(Level.ERROR, "FileHelper#writeToTempFile the content for writing to the temp file is empty!");
+		}
+		
+		return StringConstants.EMPTY_STRING;
+	}
+	
 	public final boolean writeToFile(final String content, final String filePath)
 	{
 		if( !checkFile(filePath, true) || Validator.isNullOrEmpty(content) )
