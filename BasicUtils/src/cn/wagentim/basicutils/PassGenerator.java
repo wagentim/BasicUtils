@@ -3,10 +3,10 @@ import java.util.Random;
 
 public final class PassGenerator
 {
-	private static final String low_case = "abcdefghijklmnopqrstuvwxyz";
-	private static final String up_case = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	private static final String number = "0123456789";
-	private static final String special_symbols = "!_?@";
+	private static final String CASE_LOW = "abcdefghijklmnopqrstuvwxyz";
+	private static final String CASE_UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	private static final String NUMBER = "0123456789";
+	private static final String SPECIAL_SYMBOLS = "!_?@";
 	
 	private boolean needSpecialSymbol = false;
 	private boolean needUpCase = false;
@@ -21,7 +21,7 @@ public final class PassGenerator
 		
 		if( needSpecialSymbol )
 		{
-			char ssymbol = special_symbols.charAt(random.nextInt(special_symbols.length() - 1 ));
+			char ssymbol = SPECIAL_SYMBOLS.charAt(random.nextInt(SPECIAL_SYMBOLS.length() - 1 ));
 			result.append(ssymbol);
 		}
 		
@@ -30,7 +30,7 @@ public final class PassGenerator
 		
 		while( count < restAmount )
 		{
-			char c = low_case.charAt(random.nextInt(low_case.length() - 1 ));
+			char c = CASE_LOW.charAt(random.nextInt(CASE_LOW.length() - 1 ));
 			
 			if(needSpecialSymbol && specialSymbolLocation == 0)
 			{
@@ -46,7 +46,7 @@ public final class PassGenerator
 		
 		if( needUpCase )
 		{
-			char c = up_case.charAt(random.nextInt(up_case.length() - 1 ));
+			char c = CASE_UPPER.charAt(random.nextInt(CASE_UPPER.length() - 1 ));
 			
 			int index = random.nextInt(length - 1);
 			if( 0 == index )
@@ -59,7 +59,7 @@ public final class PassGenerator
 		
 		if( needNumber )
 		{
-			char c = number.charAt(random.nextInt(number.length() - 1 ));
+			char c = NUMBER.charAt(random.nextInt(NUMBER.length() - 1 ));
 			
 			int index = random.nextInt(length - 1);
 			if( 0 == index )
