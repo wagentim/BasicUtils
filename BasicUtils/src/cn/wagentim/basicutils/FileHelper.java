@@ -9,9 +9,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
-
 /**
  * Utility class for handling all file related In/Out 
  * 
