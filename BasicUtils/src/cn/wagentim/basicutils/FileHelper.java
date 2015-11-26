@@ -2,10 +2,12 @@ package cn.wagentim.basicutils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -18,11 +20,42 @@ import org.apache.logging.log4j.Logger;
  */
 public final class FileHelper
 {
-	private final Logger logger;
 	
-	public FileHelper(final Logger logger)
+	public final String readTextFile(final String filePath)
 	{
-		this.logger = logger;
+		if( !checkFile(filePath, false) )
+		{
+			return StringConstants.EMPTY_STRING;
+		}
+		
+		final Path path = Paths.get(filePath);
+
+		List<String> allLines = null;
+		
+		try
+		{
+			allLines = Files.readAllLines(path, Charset.forName("utf8"));
+		}
+		catch (IOException e)
+		{
+			return StringConstants.EMPTY_STRING;
+		}
+		
+		if( null == allLines )
+		{
+			return StringConstants.EMPTY_STRING;
+		}
+		else
+		{
+			StringBuffer sb = new StringBuffer();
+			
+			for(int i = 0; i < allLines.size(); i++)
+			{
+				sb.append(allLines.get(i));
+			}
+			
+			return sb.toString();
+		}
 	}
 	
 	public final boolean checkFile(final String filePath, final boolean createMissingDirectory)
@@ -49,16 +82,6 @@ public final class FileHelper
 		return true;
 	}
 
-	public final String writeToTempFile(final String content)
-	{
-		if( Validator.isNullOrEmpty(content) )
-		{
-			logger.log(Level.ERROR, "FileHelper#writeToTempFile the content for writing to the temp file is empty!");
-		}
-		
-		return StringConstants.EMPTY_STRING;
-	}
-	
 	public final boolean writeToFile(final String content, final String filePath)
 	{
 		if( !checkFile(filePath, true) || Validator.isNullOrEmpty(content) )
@@ -173,13 +196,11 @@ public final class FileHelper
 	{
 		if( Validator.isNullOrEmpty(filePath) )
 		{
-			logger.error("FileHelper#getOrCreateFile the given String parameter is Null or Empty");
 			return false;
 		}
 		
 		if( !checkDirectoryRecusively(filePath, true) )
 		{
-			logger.error("FileHelper#getOrCreateFile Cannot create the missing directoies");
 			return false;
 		}
 		

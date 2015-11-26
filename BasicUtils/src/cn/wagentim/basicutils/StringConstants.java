@@ -8,4 +8,5 @@ public interface StringConstants
 	public static final String DOT = ".";
 	public static final char CHAR_SLASH = '/';
 	public static final String COMMA = ",";
+	public static final String COLON = ":";
 }
