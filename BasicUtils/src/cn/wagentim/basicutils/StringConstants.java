@@ -9,4 +9,5 @@ public interface StringConstants
 	public static final char CHAR_SLASH = '/';
 	public static final String COMMA = ",";
 	public static final String COLON = ":";
+	public static final String NEWLINE = "\n";
 }

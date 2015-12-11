@@ -1,12 +1,12 @@
 package cn.wagentim.basicutils;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 /**
@@ -31,7 +31,7 @@ public final class FileHelper
 		
 		try
 		{
-			allLines = Files.readAllLines(path, Charset.forName("utf8"));
+			allLines = Files.readAllLines(path, StandardCharsets.UTF_8);
 		}
 		catch (IOException e)
 		{
@@ -81,7 +81,7 @@ public final class FileHelper
 
 	public final boolean writeToFile(final String content, final String filePath)
 	{
-		if( !checkFile(filePath, true) || Validator.isNullOrEmpty(content) )
+		if( !checkFile(filePath, false) || Validator.isNullOrEmpty(content) )
 		{
 			return false;
 		}
@@ -90,7 +90,9 @@ public final class FileHelper
 
 		try
 		{
-			Files.write(path, content.getBytes(), StandardOpenOption.WRITE);
+			BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8);
+			writer.write(content);
+			writer.flush();
 		}
 		catch (IOException e)
 		{
