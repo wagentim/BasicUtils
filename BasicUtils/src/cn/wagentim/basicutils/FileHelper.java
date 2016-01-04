@@ -78,7 +78,7 @@ public final class FileHelper
 
 		return true;
 	}
-
+	
 	public final boolean writeToFile(final String content, final String filePath)
 	{
 		if( !checkFile(filePath, false) || Validator.isNullOrEmpty(content) )
