@@ -1,5 +1,7 @@
 package cn.wagentim.basicutils;
 
+import java.util.List;
+
 public final class Validator
 {
 	public static boolean isNullOrEmpty(final CharSequence s)
@@ -20,6 +22,11 @@ public final class Validator
 	public static boolean isNullOrEmpty(final Object[] array)
 	{
 	    return (null == array) || (array.length <= 0);
+	}
+	
+	public static <T> boolean isNullOrEmpty(final List<T> array)
+	{
+	    return (null == array) || (array.size() <= 0);
 	}
 	
 	public static boolean isNull(final Object object)
